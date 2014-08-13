@@ -200,4 +200,5 @@ while 1:    # An infinite loop (the main program logic)
             else:
                 uinput = user_message.replace(command, "").strip()
                 str_buff = "JOIN " + uinput + "\r\n"
+                irc.send(str_buff.encode())
                 s(channel, "Joined " + uinput)
