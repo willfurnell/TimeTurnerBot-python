@@ -55,3 +55,4 @@ docs/_build/
 *.json
 *.ini
 config.ini
+.idea/
