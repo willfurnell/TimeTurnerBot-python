@@ -8,6 +8,7 @@ import time
 import json
 import urllib.request
 import urllib.error
+import urllib.parse
 
 # Get required information from the configuration file
 config = configparser.ConfigParser()
@@ -58,7 +59,8 @@ def timecmd(channel, uinput):
                 uinput = user_tz[internaluser]
                 user = 1
 
-        url = "http://api.worldweatheronline.com/free/v1/tz.ashx?q=" + uinput + "&format=json&key=" + config['main']['apikey']
+        uinputweb = urllib.parse.quote_plus(uinput)
+        url = "http://api.worldweatheronline.com/free/v1/tz.ashx?q=" + uinputweb + "&format=json&key=" + config['main']['apikey'] + ""
         apierror = 0
         try:
             apifile = urllib.request.urlopen(url)
