@@ -23,10 +23,7 @@ def loadfile():
 
 # Convert the output to a human readable message
 def data_to_message(data):
-    data = data[data.find(':')+1:len(data)]
-    data = data[data.find(':')+1:len(data)]
-    data = str(data[0:len(data)])
-    return data
+    return data.split(":", 2)[2]
 
 # Send a PING back to the server
 def sendping(output):
@@ -51,7 +48,6 @@ def timecmd(channel, uinput):
         servertime = time.strftime('%Y-%m-%d %H:%M:%S')
         s(channel, "TimeTurnerBot Server Time: " + servertime)
     else:
-        user_tz = loadfile()
         user = 0
         internaluser = uinput.lower()
         for u in user_tz:
@@ -92,8 +88,6 @@ def addtzcmd(channel, uinput):
     elif uinput == "now":
         s(channel, "Well done smartass, I actually need to know where you live though...")
     else:
-        with open('user_tz.json', "r+") as data_file:
-            user_tz = json.load(data_file)
         addition = {user_nick: uinput}
         user_tz.update(addition)
         with open('user_tz.json', 'w') as data_file:
@@ -103,9 +97,11 @@ def addtzcmd(channel, uinput):
 
 # Function to send a message to the specified channel
 def s(c, i):
-    i = "PRIVMSG " + c + " " + i + "\r\n"
+    i = "PRIVMSG " + c + " :" + i + "\r\n"
     irc.send(i.encode())
 
+
+user_tz = loadfile()
 
 irc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # Defines the socket
 try:
@@ -133,12 +129,12 @@ while 1:    # An infinite loop (the main program logic)
     splitout = output.split(" ")
 
     if "001" in output:
-        str_buff = "PRIVMSG NICKSERV IDENTIFY " + config['main']['nick'] + " " + config['main']['nickservpass'] + "\r\n"
+        str_buff = "PRIVMSG NICKSERV :IDENTIFY " + config['main']['nick'] + " " + config['main']['nickservpass'] + "\r\n"
         irc.send(str_buff.encode())  # Authenticate with NickServ
-        #str_buff = "UMODE2 +B"
-        #irc.send(str_buff.encode())
         str_buff = "JOIN " + config['main']['channels'] + "\r\n"
         irc.send(str_buff.encode())  # Join all specified channels
+        str_buff = "UMODE2 +B\r\n"
+        irc.send(str_buff.encode())
 
     if "PING" in output:  # Check if sent text is PING
         sendping(output)
@@ -197,3 +193,11 @@ while 1:    # An infinite loop (the main program logic)
             s(channel, "Goodbye!")
             str_buff = "PART " + channel + "\r\n"
             irc.send(str_buff.encode())
+
+        if command == "!ttbjoin" and user_nick == "will" and user_host == config['main']['allowedhost']:
+            if len(user_message.split()) == 1:
+                s(channel, "Error, channel not defined!")
+            else:
+                uinput = user_message.replace(command, "").strip()
+                str_buff = "JOIN " + uinput + "\r\n"
+                s(channel, "Joined " + uinput)
