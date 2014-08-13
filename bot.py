@@ -7,6 +7,7 @@ import configparser
 import time
 import json
 import urllib.request
+import urllib.error
 
 # Get required information from the configuration file
 config = configparser.ConfigParser()
@@ -58,19 +59,26 @@ def timecmd(channel, uinput):
                 user = 1
 
         url = "http://api.worldweatheronline.com/free/v1/tz.ashx?q=" + uinput + "&format=json&key=" + config['main']['apikey']
-        apifile = urllib.request.urlopen(url)
-        apijson = json.loads(apifile.read().decode('utf-8'))
-        print(apijson)
-        if "error" in apijson['data']:
-            s(channel, "Error! The time could not be given for the city/person you requested!")
-        elif user == 1:
-            finaltime = time.strptime(apijson['data']['time_zone'][0]['localtime'], '%Y-%m-%d %H:%M')
-            finaltime = time.strftime('%A %d %B %Y %H:%M', finaltime)
-            s(channel, "The time where " + internaluser + " lives (" + uinput + ") is " + finaltime)
-        else:
-            finaltime = time.strptime(apijson['data']['time_zone'][0]['localtime'], '%Y-%m-%d %H:%M')
-            finaltime = time.strftime('%A %d %B %Y %H:%M', finaltime)
-            s(channel, "The time in " + uinput + " is " + finaltime)
+        apierror = 0
+        try:
+            apifile = urllib.request.urlopen(url)
+        except urllib.error.HTTPError as e:
+            s(channel, "API error! " + str(e))
+            apierror = 1
+
+        if apierror == 0:
+            apijson = json.loads(apifile.read().decode('utf-8'))
+            print(apijson)
+            if "error" in apijson['data']:
+                s(channel, "Error! The time could not be given for the city/person you requested!")
+            elif user == 1:
+                finaltime = time.strptime(apijson['data']['time_zone'][0]['localtime'], '%Y-%m-%d %H:%M')
+                finaltime = time.strftime('%A %d %B %Y %H:%M', finaltime)
+                s(channel, "The time where " + internaluser + " lives (" + uinput + ") is " + finaltime)
+            else:
+                finaltime = time.strptime(apijson['data']['time_zone'][0]['localtime'], '%Y-%m-%d %H:%M')
+                finaltime = time.strftime('%A %d %B %Y %H:%M', finaltime)
+                s(channel, "The time in " + uinput + " is " + finaltime)
 
 
 # !addtz command
