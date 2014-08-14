@@ -144,7 +144,11 @@ while 1:    # An infinite loop (the main program logic)
         user_host = output.split('@')[1].split(' ')[0]
         user_message = data_to_message(output)
         channel = splitout[2]
-        command = user_message.split()[0]
+        #If the message has no content, then the bot will crash. This rectifies this.
+        try:
+            command = user_message.split()[0]
+        except IndexError:
+            command = "nocmd"
 
         if command == "!time":
             if len(user_message.split()) == 1:
