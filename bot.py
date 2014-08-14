@@ -143,10 +143,8 @@ while 1:    # An infinite loop (the main program logic)
         user_nick = output.split('!')[0].split(":")[1]
         user_host = output.split('@')[1].split(' ')[0]
         user_message = data_to_message(output)
-
         channel = splitout[2]
         command = user_message.split()[0]
-
 
         if command == "!time":
             if len(user_message.split()) == 1:
@@ -166,22 +164,6 @@ while 1:    # An infinite loop (the main program logic)
             s(channel, "TimeBot Help:")
             s(channel, "Use !addtz <location> to add your location to TimeBot")
             s(channel, "Use !time <location/person> to see the time in <location> or where <person> lives.")
-
-
-        if command == ">>>" and user_nick == "will" and user_host == config['main']['allowedhost']:
-            if len(user_message.split()) == 1:
-                s(channel, "Error!")
-            else:
-                uinput = user_message.replace(command, "")
-
-                try:
-                    output = str(eval(uinput))
-                except SyntaxError as e:
-                    output = "Syntax error: " + str(e)
-                except TypeError as e:
-                    output = "TypeError: " + str(e)
-
-                s(channel, output)
 
         if command == "!ttbquit" and user_nick == "will" and user_host == config['main']['allowedhost']:
             s(channel, "Goodbye!")
