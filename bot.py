@@ -111,7 +111,7 @@ except:
     quit("ERROR connecting to " + config['main']['server'] + "! Bailing...")
 
 output = irc.recv(4096)  # receive the text
-output = output.decode('utf-8').strip()
+output = output.decode('utf-8', 'replace').strip()
 # This is needed for the initial PING that is sent by the server
 if "PING" in output:  # Check if sent text is PING
     sendping(output)
@@ -124,7 +124,7 @@ irc.send(str_buff.encode())  # Bot information
 
 while 1:    # An infinite loop (the main program logic)
     output = irc.recv(4096)  # receive the text
-    output = output.decode('utf-8').strip()
+    output = output.decode('utf-8', 'replace').strip()  # We need to specify a replacement character in case one cannot be decoded.
     print(output)
     splitout = output.split(" ")
 
