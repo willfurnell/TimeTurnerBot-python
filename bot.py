@@ -23,7 +23,7 @@ def loadfile():
 
 # Convert the output to a human readable message
 def data_to_message(data):
-    return data.split(":", 2)[2]
+    return data.split(" :", 2)[1]
 
 # Send a PING back to the server
 def sendping(output):
