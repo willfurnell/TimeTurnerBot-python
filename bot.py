@@ -135,6 +135,8 @@ while 1:    # An infinite loop (the main program logic)
         irc.send(str_buff.encode())  # Join all specified channels
         str_buff = "UMODE2 +B\r\n"
         irc.send(str_buff.encode())
+        str_buff = "UMODE2 -x\r\n"
+        irc.send(str_buff.encode())
 
     if "PING" in output:  # Check if sent text is PING
         sendping(output)
@@ -152,10 +154,10 @@ while 1:    # An infinite loop (the main program logic)
 
         if command == "!time":
             if len(user_message.split()) == 1:
-                s(channel, "Error, city/person not defined!")
+                uinput = user_nick
             else:
                 uinput = user_message.replace(command, "").strip()
-                timecmd(channel, uinput)
+            timecmd(channel, uinput)
 
         if command == "!addtz":
             if len(user_message.split()) == 1:
