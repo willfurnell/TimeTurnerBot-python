@@ -50,10 +50,9 @@ def timecmd(channel, uinput):
     else:
         user = 0
         internaluser = uinput.lower()
-        for u in user_tz:
-            if internaluser in u:
-                uinput = user_tz[internaluser]
-                user = 1
+        if internaluser in user_tz:
+            uinput = user_tz[internaluser]
+            user = 1
 
         uinputweb = urllib.parse.quote_plus(uinput)
         url = "http://api.worldweatheronline.com/free/v1/tz.ashx?q=" + uinputweb + "&format=json&key=" + config['main']['apikey'] + ""
