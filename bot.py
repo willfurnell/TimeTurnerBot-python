@@ -87,7 +87,7 @@ def addtzcmd(channel, uinput):
     elif uinput == "now":
         s(channel, "Well done smartass, I actually need to know where you live though...")
     else:
-        addition = {user_nick: uinput}
+        addition = {user_nick.lower(): uinput}
         user_tz.update(addition)
         with open('user_tz.json', 'w') as data_file:
             json.dump(user_tz, data_file, indent=4, sort_keys=True)
